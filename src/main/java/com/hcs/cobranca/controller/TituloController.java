@@ -9,7 +9,6 @@ import com.hcs.cobranca.model.Titulo;
 import com.hcs.cobranca.repository.titulos;
 
 @Controller
-
 @RequestMapping("/titulos")
 public class TituloController {
 	
