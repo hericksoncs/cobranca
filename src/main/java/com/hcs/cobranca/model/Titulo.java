@@ -10,7 +10,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.NumberFormat;
 
@@ -21,12 +24,16 @@ public class Titulo {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long codigo;
 	
+	@NotEmpty(message="Descrição é obrigatória!")
+	@Size(max = 60, message = "A descrição não pode conter mais de 60 caracteres")
 	private String descricao;
 	
+	@NotEmpty(message="Data de vencimento é obrigatório!")
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	@Temporal(javax.persistence.TemporalType.DATE)
 	private Date dataVencimento;
 	
+	@NotNull(message="Valor é obrigatório!")
 	@NumberFormat(pattern = "#,##0.00")
 	private BigDecimal valor;
 	
