@@ -4,9 +4,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,28 +24,29 @@ import com.hcs.cobranca.repository.titulos;
 @RequestMapping("/titulos")
 public class TituloController {
 	
+	private static final String CADASTRO_VIEW = "CadastroTitulo";
+	
 	@Autowired
 	private titulos titulos;
 	
 	@RequestMapping("/novo")
 	public ModelAndView novo() {
-		ModelAndView mv = new ModelAndView("CadastroTitulo");
+		ModelAndView mv = new ModelAndView(CADASTRO_VIEW);
 		mv.addObject(new Titulo());
 		return mv;
 	}
 	
 	@RequestMapping(method = RequestMethod.POST)
-	public ModelAndView salvar(@Validated Titulo titulo, Errors errors) {
-		ModelAndView mv = new ModelAndView("CadastroTitulo");
+	public String salvar(@Validated Titulo titulo, Errors errors, RedirectAttributes attributes) {
 		
 		if(errors.hasErrors()) {
-			return mv;
+			return CADASTRO_VIEW;
 		}
 		
 		titulos.save(titulo);
 		
-		mv.addObject("mensagem","Titulo salvo com sucesso!");
-		return mv;
+		attributes.addFlashAttribute("mensagem","Titulo salvo com sucesso!");
+		return "redirect:/titulos/novo";
 	}
 	
 	@RequestMapping
@@ -53,6 +56,16 @@ public class TituloController {
 		mv.addObject("titulos",todosTitulos);
 		return mv;
 	}
+	
+	@RequestMapping("{codigo}")
+	public ModelAndView edicao(@PathVariable("codigo") Titulo titulo) { //Long codigo) {
+		// Titulo titulo=titulos.findOne(codigo); --> Substituido por @PathVariable("codigo")
+		
+		ModelAndView mv = new ModelAndView(CADASTRO_VIEW);
+		mv.addObject(titulo);
+		return mv;
+	}
+	
 	
 	@ModelAttribute("todosStatusTitulo")
 	public List<StatusTitulo> todosStatusTitulo(){
